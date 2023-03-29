@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "opensauced browser extension",
+  "version": "1.0.0",
+  "action": { "default_popup": "index.html" },
+  "permissions": ["tabs", "storage"],
+  "content_scripts": [
+    {
+      "js": ["src/main.jsx"],
+      "matches": ["https://www.github.com/*"]
+    }
+  ]
+}
