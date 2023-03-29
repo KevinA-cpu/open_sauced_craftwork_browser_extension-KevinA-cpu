@@ -7,7 +7,7 @@ To run the project locally do the following steps:
 1. Clone the repository
 
 ```
-git clone https://github.com/open-sauced-craftwork/open_sauced_craftwork_browser_extension-KevinA-cpu.git
+git clone https://github.com/KevinA-cpu/open_sauced_craftwork_browser_extension-KevinA-cpu.git
 ```
 
 2. Install the necessary dependencies
