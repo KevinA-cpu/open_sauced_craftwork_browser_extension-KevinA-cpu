@@ -8,6 +8,7 @@ function GithubProfilePage(props) {
   const [accountLink, setAccountLink] = useState("");
   const [showButton, setShowButton] = useState(false);
 
+  //fetching profile datas
   useEffect(() => {
     const fetchOpenSauceAccount = async () => {
       try {
@@ -21,7 +22,7 @@ function GithubProfilePage(props) {
       } catch (error) {
         // handle error
         console.log(error);
-        setAccountLink("");
+        setAccountLink("false");
       } finally {
         setShowButton(true);
       }
@@ -45,6 +46,58 @@ function GithubProfilePage(props) {
     };
     fetchGithubProfile();
   }, [props.handle]);
+
+  // Inject the button above the follow button
+  useEffect(() => {
+    const injectOpenSaucedButton = async (accountLink) => {
+      const followButton = document.querySelector(
+        ".js-user-profile-follow-button"
+      );
+      const openSaucedButton = document.querySelector(".opensauced-button");
+      if (followButton && !openSaucedButton) {
+        const button = document.createElement("button");
+        button.className = "py-2 px-4 rounded opensauced-button";
+        button.innerText = "View on OpenSauced";
+        button.addEventListener("click", () => {
+          window.open(accountLink, "_blank");
+        });
+        followButton.parentNode.insertBefore(button, followButton.nextSibling);
+      }
+    };
+
+    const injectJoinInsteadButton = async () => {
+      const followButton = document.querySelector(
+        ".js-user-profile-follow-button"
+      );
+      const openSaucedButton = document.querySelector(".joinopensauced-button");
+      if (followButton && !openSaucedButton) {
+        const button = document.createElement("button");
+        button.className = "py-2 px-4 rounded joinopensauced-button";
+        button.innerText = "Join OpenSauced";
+        button.addEventListener("click", () => {
+          window.open("https://insights.opensauced.pizza/start", "_blank");
+        });
+        followButton.parentNode.insertBefore(button, followButton.nextSibling);
+      }
+    };
+    if (accountLink !== "" && accountLink !== "false")
+      chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+        var tabId = tabs[0].id;
+        chrome.scripting.executeScript({
+          target: { tabId: tabId },
+          func: injectOpenSaucedButton,
+          args: [`${accountLink}`],
+        });
+      });
+    else if (accountLink === "false")
+      chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+        var tabId = tabs[0].id;
+        chrome.scripting.executeScript({
+          target: { tabId: tabId },
+          func: injectJoinInsteadButton,
+        });
+      });
+  }, [accountLink]);
 
   if (!profile) {
     return (
@@ -71,7 +124,7 @@ function GithubProfilePage(props) {
         <p className="text-xl font-thin mt-1">{bio}</p>
         <div className="text-center mt-1 mr-4">
           {showButton ? (
-            accountLink === "" ? (
+            accountLink === "" || accountLink === "false" ? (
               <div className="text-center">
                 <div className="text-sm text-gray-500 mb-2">
                   No OpenSauced account?

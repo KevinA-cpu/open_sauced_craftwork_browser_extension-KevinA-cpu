@@ -3,11 +3,12 @@
   "name": "opensauced browser extension",
   "version": "1.0.0",
   "action": { "default_popup": "index.html" },
-  "permissions": ["tabs", "storage"],
+  "permissions": ["tabs", "storage", "activeTab", "scripting"],
   "content_scripts": [
     {
       "js": ["src/main.jsx"],
-      "matches": ["https://www.github.com/*"]
+      "matches": ["https://www.github.com/*"],
+      "run_at": "document_idle"
     }
   ]
 }
